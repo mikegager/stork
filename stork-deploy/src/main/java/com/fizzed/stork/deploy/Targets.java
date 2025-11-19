@@ -91,10 +91,7 @@ public class Targets {
                     "elif \\$(systemctl 2>/dev/null| egrep -q .mount); then echo systemd; " +
                     "elif [ -f /etc/init.d/cron ] || [ -f /etc/init.d/crond ]; then echo sysv; " +
                     "else echo unknown; fi")
-                .pipeOutput(Streamables.captureOutput())
-                .pipeError(Streamables.nullOutput())
-                .runResult()
-                .map(Actions::toCaptureOutput)
+                .runCaptureOutput(false)
                 .asString();
         
         if (initTypeString == null) {
@@ -117,13 +114,10 @@ public class Targets {
         // doesn't matter if we find it or not
         String whichString
             =  sshExec(ssh, "which", commands.toArray())
-                .pipeOutput(Streamables.captureOutput())
-                .pipeError(Streamables.nullOutput())
                 .exitValues(0, 1, 2)
-                .runResult()
-                .map(Actions::toCaptureOutput)
+                .runCaptureOutput(false)
                 .asString();
-        
+
         if (whichString == null) {
             return Collections.emptyMap();
         }
@@ -143,11 +137,8 @@ public class Targets {
     static private String uname(SshSession ssh) {
         // doesn't matter if we find it or not
         return sshExec(ssh, "uname", "-srm")
-            .pipeOutput(Streamables.captureOutput())
-            .pipeError(Streamables.nullOutput())
             .exitValues(0)
-            .runResult()
-            .map(Actions::toCaptureOutput)
+            .runCaptureOutput(false)
             .asString()
             .trim();
     }
