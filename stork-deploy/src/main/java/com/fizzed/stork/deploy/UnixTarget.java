@@ -307,7 +307,7 @@ public class UnixTarget extends SshTarget {
             String defaultsFile = "/etc/" + dir + "/" + daemon.getName();
 
             String cmd
-                = "if [ -d /etc/" + dir + " ]; then "
+                = "'if [ -d /etc/" + dir + " ]; then "
                 + "  if [ ! -f " + defaultsFile + " ]; then "    
                 + "    echo \"APP_HOME=\\\"" + install.getCurrentDir() + "\\\"\" > " + defaultsFile + "; "
                 + "    echo \"APP_USER=\\\"" + install.getUser().orElse("") + "\\\"\" >> " + defaultsFile + "; "
@@ -318,7 +318,7 @@ public class UnixTarget extends SshTarget {
                 + "  fi "
                 + "else "
                 + "  exit 10; "
-                + "fi";
+                + "fi'";
 
             Integer exitValue
                 = sshExec(true, true, cmd)
